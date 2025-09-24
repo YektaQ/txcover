@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <title>درباره ما</title>
+    <style>
+        body {
+            direction: rtl;
+            font-family: 'Vazir', Tahoma, sans-serif;
+            background-color: #f5f5f5;
+            padding: 40px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        p {
+            max-width: 800px;
+            margin: 30px auto;
+            font-size: 1.2rem;
+            line-height: 2;
+            text-align: justify;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 600;
+            color: #2980b9;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>درباره ما</h1>
+    <p>
+        اینجا می‌تونی توضیح بدی که این سایت چی هست، چه خدماتی ارائه می‌ده، تیم پشتش کیه و هدفش چیه.
+        مثلاً: فروشگاه ما با هدف ارائه محصولات دیجیتال با کیفیت راه‌اندازی شده و تلاش می‌کنه بهترین تجربه خرید آنلاین رو فراهم کنه.
+    </p>
+    <a href="{% url 'category_list_frontend' %}">بازگشت به صفحه اصلی</a>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <title>تماس با ما</title>
+    <style>
+        body {
+            direction: rtl;
+            font-family: 'Vazir', Tahoma, sans-serif;
+            background-color: #e5faeb;
+            padding: 40px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        p {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: 30px;
+            font-weight: 600;
+            color: #2980b9;
+        }
+        a {
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            color: #2980b9;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>تماس با ما</h1>
+    <p>شماره تلفن: {{ phone_number }}</p>
+    <a href="{% url 'category_list_frontend' %}">بازگشت به صفحه اصلی</a>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <title>ورود با شماره تلفن</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            direction: rtl;
+            padding: 20px;
+            background: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            flex-direction: column;
+            gap: 30px;
+        }
+        form {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #444;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 7px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            margin-top: 25px;
+            padding: 12px;
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+        .message {
+            margin-top: 15px;
+            font-size: 15px;
+            min-height: 24px;
+            text-align: center;
+        }
+        .message.error {
+            color: #c0392b;
+        }
+        .message.success {
+            color: #27ae60;
+            word-break: break-word;
+        }
+        /* نمایش پروفایل */
+        #profile-container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            text-align: right;
+        }
+        #profile-container h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+            text-align: center;
+        }
+        #profile-container p {
+            margin: 6px 0;
+            font-size: 16px;
+            color: #444;
+            word-break: break-word;
+        }
+        #back-home-btn {
+            margin-top: 20px;
+            background-color: #2980b9;
+        }
+        #back-home-btn:hover {
+            background-color: #1c5980;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="phone-form" novalidate>
+        <h2>ورود با شماره تلفن</h2>
+        <label for="phone">شماره تلفن (فرمت: 989xxxxxxxxx):</label>
+        <input
+            type="tel"
+            id="phone"
+            name="phone"
+            required
+            pattern="^989[01239]\d{8}$"
+            placeholder="مثال: 989123456789"
+            autocomplete="tel"
+        />
+        <button type="submit" id="send-code-btn">دریافت کد</button>
+        <div class="message" id="phone-message"></div>
+    </form>
+
+    <form id="code-form" style="display:none;" novalidate>
+        <h2>ورود با کد تایید</h2>
+        <label for="code">کد ارسال شده را وارد کنید:</label>
+        <input
+            type="text"
+            id="code"
+            name="code"
+            required
+            pattern="^\d{6}$"
+            placeholder="کد 6 رقمی"
+            autocomplete="one-time-code"
+        />
+        <button type="submit" id="login-btn">ورود</button>
+        <div class="message" id="code-message"></div>
+    </form>
+
+    <div id="profile-container" style="display:none;">
+        <h3>اطلاعات کاربر</h3>
+        <p><strong>شماره تلفن:</strong> <span id="profile-phone"></span></p>
+        <p><strong>نام کامل:</strong> <span id="profile-name"></span></p>
+        <p><strong>ایمیل:</strong> <span id="profile-email"></span></p>
+        <button id="back-home-btn" type="button">بازگشت به صفحه اصلی</button>
+    </div>
+
+<script>
+    const BASE_URL = 'http://localhost:8000';
+
+    const phoneForm = document.getElementById('phone-form');
+    const codeForm = document.getElementById('code-form');
+    const phoneMessage = document.getElementById('phone-message');
+    const codeMessage = document.getElementById('code-message');
+    const sendCodeBtn = document.getElementById('send-code-btn');
+    const loginBtn = document.getElementById('login-btn');
+
+    const profileContainer = document.getElementById('profile-container');
+    const profilePhone = document.getElementById('profile-phone');
+    const profileName = document.getElementById('profile-name');
+    const profileEmail = document.getElementById('profile-email');
+    const backHomeBtn = document.getElementById('back-home-btn');
+
+    phoneForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        phoneMessage.textContent = '';
+        phoneMessage.className = 'message';
+        sendCodeBtn.disabled = true;
+
+        const phoneInput = phoneForm.phone;
+        if (!phoneInput.checkValidity()) {
+            phoneMessage.textContent = 'لطفا شماره تلفن معتبر وارد کنید.';
+            phoneMessage.classList.add('error');
+            sendCodeBtn.disabled = false;
+            return;
+        }
+
+        const phone = phoneInput.value.trim();
+
+        try {
+            const response = await fetch(`${BASE_URL}/register/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone_number: phone }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                phoneMessage.textContent = 'کد تایید به شماره شما ارسال شد. لطفاً کد را وارد کنید.';
+                phoneMessage.classList.add('success');
+
+                phoneForm.style.display = 'none';
+                codeForm.style.display = 'block';
+                codeMessage.textContent = '';
+                loginBtn.disabled = false;
+            } else {
+                phoneMessage.textContent = data.message || 'خطا در ارسال کد.';
+                phoneMessage.classList.add('error');
+            }
+        } catch (error) {
+            phoneMessage.textContent = 'خطا در ارتباط با سرور.';
+            phoneMessage.classList.add('error');
+        } finally {
+            sendCodeBtn.disabled = false;
+        }
+    });
+
+    codeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        codeMessage.textContent = '';
+        codeMessage.className = 'message';
+        loginBtn.disabled = true;
+
+        const codeInput = codeForm.code;
+        if (!codeInput.checkValidity()) {
+            codeMessage.textContent = 'کد ۶ رقمی معتبر وارد کنید.';
+            codeMessage.classList.add('error');
+            loginBtn.disabled = false;
+            return;
+        }
+
+        const phone = phoneForm.phone.value.trim();
+        const code = codeInput.value.trim();
+
+        try {
+            const response = await fetch(`${BASE_URL}/token/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone_number: phone, code: code }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                codeMessage.textContent = 'ورود موفق!';
+
+                // ذخیره توکن‌ها در localStorage
+                localStorage.setItem('access_token', data.access);
+                localStorage.setItem('refresh_token', data.refresh);
+
+                // ذخیره اطلاعات کاربر و نمایش آنها
+                if (data.user) {
+                    localStorage.setItem('user_info', JSON.stringify(data.user));
+                    showUserProfile(data.user);
+                } else {
+                    const minimalUser = { phone_number: phone, full_name: '-', email: '-' };
+                    localStorage.setItem('user_info', JSON.stringify(minimalUser));
+                    showUserProfile(minimalUser);
+                }
+
+                phoneForm.style.display = 'none';
+                codeForm.style.display = 'none';
+            } else {
+                codeMessage.textContent = data.message || 'کد نامعتبر است.';
+                codeMessage.classList.add('error');
+            }
+        } catch (error) {
+            codeMessage.textContent = 'خطا در ارتباط با سرور.';
+            codeMessage.classList.add('error');
+        } finally {
+            loginBtn.disabled = false;
+        }
+    });
+
+    function showUserProfile(user) {
+        profilePhone.textContent = user.phone_number || '-';
+        profileName.textContent = user.full_name || '-';
+        profileEmail.textContent = user.email || '-';
+        profileContainer.style.display = 'block';
+        profileContainer.style.display = 'block';
+    }
+
+    backHomeBtn.addEventListener('click', () => {
+        // بازگشت به صفحه اصلی (آدرس صفحه اصلی را اینجا وارد کن)
+        window.location.href = '/site/categories/'; // یا مسیر دقیق صفحه اصلی شما
+    });
+
+// اگر توکن و اطلاعات کاربر در localStorage هست، مستقیم پروفایل رو نمایش بده
+document.addEventListener('DOMContentLoaded', () => {
+    const userInfoStr = localStorage.getItem('user_info');
+    if (userInfoStr) {
+        const userInfo = JSON.parse(userInfoStr);
+        phoneForm.style.display = 'none';
+        codeForm.style.display = 'none';
+        showUserProfile(userInfo);
+    }
+});
+</script>
+
+</body>
+</html>

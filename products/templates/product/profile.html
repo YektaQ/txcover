@@ -1,0 +1,16 @@
+<!-- profile.html -->
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>صفحه پروفایل</title>
+</head>
+<body>
+    <h1>پروفایل شما</h1>
+    <p><strong>نام کامل:</strong> {{ user.get_full_name }}</p>
+    <p><strong>شماره تلفن:</strong> {{ user.phone_number }}</p>
+    <p><strong>ایمیل:</strong> {{ user.email }}</p>
+    <!-- اطلاعات دلخواه دیگر -->
+    <a href="{% url 'product_list_frontend' %}">بازگشت به فروشگاه</a>
+</body>
+</html>
