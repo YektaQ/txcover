@@ -1,6 +1,10 @@
 import os
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-)h_n4lj$c1)1l4wtwo#g$c3zua*7fe-rl(#2ed7*5h1hct1oz#")
+DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "*").split(",")
+
 from pathlib import Path
-from .local_settings import *
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
