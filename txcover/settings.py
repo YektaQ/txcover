@@ -75,9 +75,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'txcover.wsgi.application'
 
 # Login settings
-LOGIN_URL = '/category_list/'
-LOGOUT_REDIRECT_URL = '/login/'
-LOGIN_REDIRECT_URL = '/profile/'
+# LOGIN_URL = '/category_list/'
+# LOGOUT_REDIRECT_URL = '/login/'
+# LOGIN_REDIRECT_URL = '/profile/'
 
 # Database
 DATABASES = {
