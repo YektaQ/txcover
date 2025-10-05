@@ -14,6 +14,7 @@ urlpatterns = [
     #Front urls
     path('site/products/',product_list,name='product_list_frontend'),
     path('site/products/<int:pk>/',product_detail,name='product_detail_frontend'),
+    path('', category_list, name='home'),
     path('site/categories/',category_list,name='category_list_frontend'),
     path('site/products/category/<int:category_id>/', product_list_by_category, name='product_list_by_category'),
     path('contact_us/',contact_us,name='contact_us'),

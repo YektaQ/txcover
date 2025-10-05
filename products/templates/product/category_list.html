@@ -35,7 +35,7 @@
             align-items: center;
         }
 
-        .bar-link, .login-link {
+        .bar-link {
             color: #333;
             text-decoration: none;
             font-weight: 600;
@@ -45,7 +45,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .bar-link:hover, .login-link:hover {
+        .bar-link:hover {
             background-color: #b7eece;
             color: white;
             text-decoration: none;
@@ -230,23 +230,16 @@
     <div class="bar">
         <!-- سمت راست -->
         <div class="right-link">
-
-
+            {% if request.user.is_authenticated %}
             <div class="profile-container">
                 <a href="{% url 'profile_page' %}">
-               <img
-                    src="{% if request.user.is_authenticated and request.user.userprofile and request.user.userprofile.avatar %}
-                            {{ request.user.userprofile.avatar.url }}
-                          {% else %}
-                            https://cdn-icons-png.flaticon.com/512/847/847969.png
-                          {% endif %}"
-                    alt="پروفایل"
-                    class="profile-icon"
-                    id="profile-toggle"
-                />
+                    <img
+                        src="{% if request.user.userprofile and request.user.userprofile.avatar %}{{ request.user.userprofile.avatar.url }}{% else %}https://cdn-icons-png.flaticon.com/512/847/847969.png{% endif %}"
+                        alt="پروفایل"
+                        class="profile-icon"
+                        id="profile-toggle"
+                    />
                 </a>
-
-                {% if request.user.is_authenticated %}
                 <div class="profile-dropdown" id="profile-dropdown">
                     <p><strong>نام:</strong> {{ request.user.get_full_name }}</p>
                     <p><strong>شماره:</strong> {{ request.user.phone_number }}</p>
@@ -256,8 +249,8 @@
                     <hr />
                     <a href="{% url 'logout' %}" style="color: #c0392b;">خروج</a>
                 </div>
-                {% endif %}
             </div>
+            {% endif %}
         </div>
 
         <!-- سمت چپ -->
@@ -299,4 +292,27 @@
     {% empty %}
         <li>هیچ دسته‌بندی‌ای یافت نشد.</li>
     {% endfor %}
-    </ul>
+</ul>
+
+<script>
+    // Toggle profile dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileToggle = document.getElementById('profile-toggle');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        if(profileToggle) {
+            profileToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+        }
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if(profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileToggle) {
+                profileDropdown.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
