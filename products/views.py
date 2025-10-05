@@ -89,7 +89,6 @@ def contact_us(request):
 def about_us(request):
     return render(request,'product/about_us.html')
 
-@login_required
 def profile_view(request):
     return render(request,'product/profile_view.html',
                   {
