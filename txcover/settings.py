@@ -2,7 +2,7 @@ import os
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-)h_n4lj$c1)1l4wtwo#g$c3zua*7fe-rl(#2ed7*5h1hct1oz#")
 DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", ".up.railway.app,localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = ["web-production-3fa66b.up.railway.app", "localhost","127.0.0.1"]
 
 
 from pathlib import Path
