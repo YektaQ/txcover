@@ -24,10 +24,8 @@ from users.views import phone_auth_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("products.urls")),
-    path('',include("users.urls")),
+    path('users/',include("users.urls")),
     path('phone_auth/',phone_auth_view,name='phone_auth'),
-    path('login/',auth_views.LoginView.as_view(template_name='login.html'),name='login'),
-    path('logout/',auth_views.LogoutView.as_view(),name='logout'),
 ]
 if settings.IS_DEVEL:
      urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
