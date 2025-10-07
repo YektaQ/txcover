@@ -59,7 +59,7 @@ ROOT_URLCONF = 'txcover.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR, 'templates'],
+        'DIRS': [BASE_DIR/ 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'txcover.wsgi.application'
 
 # Login settings
-LOGIN_URL = '/site/categories/'
+#LOGIN_URL = '/site/categories/'
 # LOGOUT_REDIRECT_URL = '/login/'
 # LOGIN_REDIRECT_URL = '/profile/'
 
